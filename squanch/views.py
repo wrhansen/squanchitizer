@@ -18,7 +18,6 @@ def squanchitize(request):
         text = text.lower()
         tokens = nltk.word_tokenize(text)
         nltk_text = nltk.Text(tokens)
-        print(nltk_text)
 
         verbs = [tag[0] for tag in nltk.pos_tag(nltk_text) if tag[1].startswith('VB')]
         for verb in verbs:
