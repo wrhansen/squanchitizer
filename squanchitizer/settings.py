@@ -25,7 +25,7 @@ SECRET_KEY = '2ni%cu4mv2!jaec(4$=*$htp#nl2dbxk22=pm9)-642&t72(o#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://wes-squanchitizer.herokuapp.com/']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'wes-squanchitizer.herokuapp.com']
 
 
 # Application definition
