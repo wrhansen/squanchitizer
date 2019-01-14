@@ -1,13 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
 
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
+
     <title>Squanchitizer</title>
 </head>
 
 <body>
-    <h1>Squanchitizer!</h1>
+    <h1>Squanchitizer</h1>
+    <form action="/submit-squanch/" method="post">{% csrf_token %}
+        <label for="squanch-user">Your name: </label>
+        <input id="squanch-user" type="text" name="squanch-user" value="{{user}} ">
+        <br>
+        <label for="squanch-text">Enter some text: </label>
+        <input id="squanch-text" type="text" name="squanch-text" value="">
+        <br>
+    </form>
+
+    <h2>Squanched Text:</h2>
+    <p id="squanched-text">{{squanched_text}}</p>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // using jQuery
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        // Setup listener
+        console.log($("#squanch-text"));
+        $("#squanch-text").on("paste keyup", function (event) {
+            var text = $(this).val();
+
+            $.ajax({
+                url: "/squanch/squanchitize",
+                method: 'POST',
+                data: JSON.stringify({
+                    text: text,
+                }),
+                contentType: 'text/json',
+                dataType: "json",
+                success: function (data, status, xhr) {
+                    $("#squanched-text").html(data.squanchitized_text);
+                },
+                error: function (xhr, status, error) {
+                }
+            })
+
+        });
+
+    </script>
 </body>
 
 </html>
